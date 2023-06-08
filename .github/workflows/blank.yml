@@ -1,0 +1,47 @@
+name: CI/CD Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+    inputs:
+      stack_name:
+        description: 'Select stack name'
+        required: true
+        type: multi-select
+        options:
+          - stack1
+          - stack2
+          - stack3
+      proceed:
+        description: 'Proceed with deployment?'
+        required: true
+        default: 'no'
+        type: boolean
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Proceed with Deployment
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          if [[ "${{ github.event.inputs.proceed }}" == "true" ]]; then
+            echo "Proceeding with deployment."
+          else
+            echo "Skipping deployment."
+            exit 0
+          fi
+
+      - name: Echo Stack Names
+        run: |
+          for stack in ${{ join(github.event.inputs.stack_name, ' ') }}; do
+            echo "Selected stack: $stack"
+          done
