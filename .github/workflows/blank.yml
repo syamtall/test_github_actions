@@ -14,7 +14,7 @@ on:
       stack_name:
         description: 'Select stack name'
         required: true
-        type: multi-select
+        type: multi-choice
         options:
           - stack1
           - stack2
